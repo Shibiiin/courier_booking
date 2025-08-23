@@ -14,7 +14,7 @@ build_runner:
 path_provider:
 hive_flutter: 
 
-3. Instruction to Run :- The file Main.dart is the main entry point of the application.
+3. Instruction to Run :- The file (main.dart) is the main entry point of the application.
 { TRK1755974577303 , TRK1672618800000, TRK1672705200000 } these are the dummy tracking numbers from the mocked tracking data file.
 
 4. ScreenShot of the screens : Placed on the folder (img/)
