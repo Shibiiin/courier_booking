@@ -1,5 +1,8 @@
 import 'package:courier_booking/Courier%20Booking/presentation/routes/appRoutes.dart';
+import 'package:courier_booking/Courier%20Booking/presentation/theme/appColors.dart';
+import 'package:courier_booking/Courier%20Booking/presentation/widgets/common/extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -23,26 +26,55 @@ class DashBoardPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             /// Navigation Buttons
-            ElevatedButton(
-              onPressed: () => context.push(AppRoutes.booking),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
+            Container(
+              height: 100.h,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: AppColors.ogbackgroundcolor,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
               ),
-              child: const Text('Book Courier'),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => context.push(AppRoutes.tracking),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                backgroundColor: Colors.green,
-                foregroundColor: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 300.w,
+                    child: ElevatedButton(
+                      onPressed: () => context.push(AppRoutes.booking),
+                      style: ElevatedButton.styleFrom(
+                        // padding: const EdgeInsets.symmetric(vertical: 16),
+                        backgroundColor: Colors.blue,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('Book Courier'),
+                    ),
+                  ),
+                  15.height,
+                  SizedBox(
+                    width: 300.w,
+                    child: ElevatedButton(
+                      onPressed: () => context.push(AppRoutes.tracking),
+                      style: ElevatedButton.styleFrom(
+                        // padding: const EdgeInsets.symmetric(vertical: 16),
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('Track Shipment'),
+                    ),
+                  ),
+                ],
               ),
-              child: const Text('Track Shipment'),
             ),
-            const SizedBox(height: 24),
+
+            20.height,
             const Text(
               'Recent Bookings',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -56,7 +88,6 @@ class DashBoardPage extends StatelessWidget {
                   if (provider.bookings.isEmpty) {
                     return const Center(child: Text('No bookings yet'));
                   }
-
                   return ListView.builder(
                     itemCount: provider.bookings.length,
                     itemBuilder: (context, index) {

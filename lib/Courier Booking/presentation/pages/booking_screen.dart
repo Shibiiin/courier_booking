@@ -1,5 +1,6 @@
 import 'package:courier_booking/Courier%20Booking/presentation/manager/dashboard_controller.dart';
 import 'package:courier_booking/Courier%20Booking/presentation/theme/appColors.dart';
+import 'package:courier_booking/Courier%20Booking/presentation/widgets/common/custom_toast.dart';
 import 'package:courier_booking/Courier%20Booking/presentation/widgets/common/extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,10 +17,37 @@ class BookingScreen extends StatefulWidget {
 }
 
 class _BookingScreenState extends State<BookingScreen> {
-  final DashBoardController controller = DashBoardController();
+  late final FocusNode _senderNameFocusNode;
+  late final FocusNode _senderPhoneFocusNode;
+  late final FocusNode _senderAddressFocusNode;
+  late final FocusNode _receiverNameFocusNode;
+  late final FocusNode _receiverPhoneFocusNode;
+  late final FocusNode _receiverAddressFocusNode;
+  late final FocusNode _packageWeightFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _senderNameFocusNode = FocusNode();
+    _senderPhoneFocusNode = FocusNode();
+    _senderAddressFocusNode = FocusNode();
+    _receiverNameFocusNode = FocusNode();
+    _receiverPhoneFocusNode = FocusNode();
+    _receiverAddressFocusNode = FocusNode();
+    _packageWeightFocusNode = FocusNode();
+  }
+
   @override
   void dispose() {
-    controller.clearBookingDetails();
+    // 3. Dispose of the Focus Nodes to prevent memory leaks
+    _senderNameFocusNode.dispose();
+    _senderPhoneFocusNode.dispose();
+    _senderAddressFocusNode.dispose();
+    _receiverNameFocusNode.dispose();
+    _receiverPhoneFocusNode.dispose();
+    _receiverAddressFocusNode.dispose();
+    _packageWeightFocusNode.dispose();
     super.dispose();
   }
 
@@ -31,6 +59,7 @@ class _BookingScreenState extends State<BookingScreen> {
         backgroundColor: AppColors.backgroundColor,
         leading: IconButton(
           onPressed: () {
+            controller.clearBookingDetails();
             context.pop();
           },
           icon: Icon(Icons.arrow_back, color: AppColors.white),
@@ -48,16 +77,15 @@ class _BookingScreenState extends State<BookingScreen> {
                 'Sender Details',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 8),
+              10.height,
               LabelCustomTextField(
                 controller: controller.senderNameController,
                 hintText: 'Enter sender name',
                 textFieldLabel: 'Sender Name',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter sender name';
-                  }
-                  return null;
+                focusNode: _senderNameFocusNode,
+                textInputAction: TextInputAction.next,
+                onFieldSubmit: (_) {
+                  FocusScope.of(context).requestFocus(_senderPhoneFocusNode);
                 },
               ),
               LabelCustomTextField(
@@ -66,11 +94,10 @@ class _BookingScreenState extends State<BookingScreen> {
                 textFieldLabel: 'Sender Phone',
                 inputType: TextInputType.phone,
                 inputFormatters: [LengthLimitingTextInputFormatter(10)],
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter sender phone';
-                  }
-                  return null;
+                focusNode: _senderPhoneFocusNode,
+                textInputAction: TextInputAction.next,
+                onFieldSubmit: (_) {
+                  FocusScope.of(context).requestFocus(_senderAddressFocusNode);
                 },
               ),
               LabelCustomTextField(
@@ -78,11 +105,10 @@ class _BookingScreenState extends State<BookingScreen> {
                 hintText: 'Enter sender address',
                 textFieldLabel: 'Sender Address',
                 lines: 2,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter sender address';
-                  }
-                  return null;
+                focusNode: _senderAddressFocusNode,
+                textInputAction: TextInputAction.next,
+                onFieldSubmit: (_) {
+                  FocusScope.of(context).requestFocus(_receiverNameFocusNode);
                 },
               ),
               20.height,
@@ -95,28 +121,24 @@ class _BookingScreenState extends State<BookingScreen> {
                 controller: controller.receiverNameController,
                 hintText: 'Enter receiver name',
                 textFieldLabel: 'Receiver Name',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter receiver name';
-                  }
-                  return null;
+                focusNode: _receiverNameFocusNode,
+                textInputAction: TextInputAction.next,
+                onFieldSubmit: (_) {
+                  FocusScope.of(context).requestFocus(_receiverPhoneFocusNode);
                 },
               ),
               LabelCustomTextField(
                 controller: controller.receiverPhoneController,
                 hintText: 'Enter receiver phone',
+                inputFormatters: [LengthLimitingTextInputFormatter(10)],
                 textFieldLabel: 'Receiver Phone',
                 inputType: TextInputType.phone,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter receiver phone';
-                  }
-                  if (!RegExp(
-                    r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$',
-                  ).hasMatch(value)) {
-                    return 'Please enter a valid phone number';
-                  }
-                  return null;
+                focusNode: _receiverPhoneFocusNode,
+                textInputAction: TextInputAction.next,
+                onFieldSubmit: (_) {
+                  FocusScope.of(
+                    context,
+                  ).requestFocus(_receiverAddressFocusNode);
                 },
               ),
               LabelCustomTextField(
@@ -124,11 +146,10 @@ class _BookingScreenState extends State<BookingScreen> {
                 hintText: 'Enter receiver address',
                 textFieldLabel: 'Receiver Address',
                 lines: 2,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter receiver address';
-                  }
-                  return null;
+                focusNode: _receiverAddressFocusNode,
+                textInputAction: TextInputAction.next,
+                onFieldSubmit: (_) {
+                  FocusScope.of(context).requestFocus(_packageWeightFocusNode);
                 },
               ),
               20.height,
@@ -143,14 +164,10 @@ class _BookingScreenState extends State<BookingScreen> {
                   hintText: 'e.g., 5.5',
                   textFieldLabel: 'Package Weight (kg)',
                   inputType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter package weight';
-                    }
-                    if (double.tryParse(value) == null) {
-                      return 'Please enter a valid number';
-                    }
-                    return null;
+                  focusNode: _packageWeightFocusNode,
+                  textInputAction: TextInputAction.done,
+                  onFieldSubmit: (_) {
+                    FocusScope.of(context).unfocus();
                   },
                   onchanged: () {},
                 ),
@@ -177,12 +194,6 @@ class _BookingScreenState extends State<BookingScreen> {
                 ),
                 readOnly: true,
                 onTap: () => controller.selectDate(controller, context),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please select a pickup date';
-                  }
-                  return null;
-                },
               ),
               TextFormField(
                 controller: controller.pickupTimeController,
@@ -192,21 +203,56 @@ class _BookingScreenState extends State<BookingScreen> {
                 ),
                 readOnly: true,
                 onTap: () => controller.selectTime(controller, context),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please select a pickup time';
-                  }
-                  return null;
-                },
               ),
               20.height,
               ElevatedButton(
-                onPressed: () => controller.submitForm(controller, context),
+                onPressed: () {
+                  if (controller.senderNameController.text.isEmpty) {
+                    showCustomToast("Please enter the Sender Name");
+                  } else if (controller.senderPhoneController.text.isEmpty) {
+                    showCustomToast("Please enter the Sender Phone");
+                  } else if (controller.senderAddressController.text.isEmpty) {
+                    showCustomToast("Please enter the Sender Address");
+                  } else if (controller.receiverNameController.text.isEmpty) {
+                    showCustomToast("Please enter the Receiver Name");
+                  } else if (controller.receiverPhoneController.text.isEmpty) {
+                    showCustomToast("Please enter the Receiver Phone");
+                  } else if (!RegExp(
+                    r'^\d{10}$', // Simple 10-digit phone regex
+                  ).hasMatch(controller.receiverPhoneController.text)) {
+                    showCustomToast(
+                      'Please enter a valid 10-digit phone number',
+                    );
+                  } else if (controller
+                      .receiverAddressController
+                      .text
+                      .isEmpty) {
+                    showCustomToast("Please enter the Receiver Address");
+                  } else if (controller.packageWeightController.text.isEmpty) {
+                    showCustomToast("Please enter the Package Weight");
+                  } else if (double.tryParse(
+                        controller.packageWeightController.text,
+                      ) ==
+                      null) {
+                    showCustomToast('Please enter a valid number for weight');
+                  } else if (controller.pickupDateController.text.isEmpty) {
+                    showCustomToast("Please select a pickup date");
+                  } else if (controller.pickupTimeController.text.isEmpty) {
+                    showCustomToast("Please select a pickup time");
+                  } else {
+                    controller.submitForm(controller, context);
+                  }
+                },
                 style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.backgroundColor,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: const Text('Book Courier'),
+                child: const Text(
+                  'Book Courier',
+                  style: TextStyle(color: AppColors.white),
+                ),
               ),
+              10.height,
             ],
           ),
         ),

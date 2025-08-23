@@ -1,16 +1,44 @@
-class CourierBookingModal {
+import 'package:hive/hive.dart';
+
+part 'courier_booking_modal.g.dart';
+
+@HiveType(typeId: 0)
+class CourierBookingModal extends HiveObject {
+  @HiveField(0)
   final String id;
+
+  @HiveField(1)
   final String senderName;
+
+  @HiveField(2)
   final String senderPhone;
+
+  @HiveField(3)
   final String senderAddress;
+
+  @HiveField(4)
   final String receiverName;
+
+  @HiveField(5)
   final String receiverPhone;
+
+  @HiveField(6)
   final String receiverAddress;
+
+  @HiveField(7)
   final double packageWeight;
+
+  @HiveField(8)
   final DateTime pickupDateTime;
+
+  @HiveField(9)
   final double price;
+
+  @HiveField(10)
   final String trackingNumber;
-  final String status;
+
+  @HiveField(11)
+  String status;
 
   CourierBookingModal({
     required this.id,
@@ -26,21 +54,4 @@ class CourierBookingModal {
     required this.trackingNumber,
     this.status = 'Booked',
   });
-
-  CourierBookingModal copyWith({String? status}) {
-    return CourierBookingModal(
-      id: id,
-      senderName: senderName,
-      senderPhone: senderPhone,
-      senderAddress: senderAddress,
-      receiverName: receiverName,
-      receiverPhone: receiverPhone,
-      receiverAddress: receiverAddress,
-      packageWeight: packageWeight,
-      pickupDateTime: pickupDateTime,
-      price: price,
-      trackingNumber: trackingNumber,
-      status: status ?? this.status,
-    );
-  }
 }

@@ -2,13 +2,20 @@ import 'package:courier_booking/Courier%20Booking/presentation/pages/dashboard.d
 import 'package:go_router/go_router.dart';
 
 import '../pages/booking_screen.dart';
+import '../pages/splash_screen.dart';
 import '../pages/tracking_page.dart';
 import 'appRoutes.dart';
 
 class GoRouterPage {
   final GoRouter goRouter = GoRouter(
-    initialLocation: AppRoutes.booking,
+    initialLocation: AppRoutes.splash,
     routes: [
+      GoRoute(
+        path: AppRoutes.splash,
+        builder: (context, state) {
+          return SplashScreen();
+        },
+      ),
       GoRoute(
         path: AppRoutes.dashboard,
         builder: (context, state) {

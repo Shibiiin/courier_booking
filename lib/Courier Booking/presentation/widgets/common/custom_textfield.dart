@@ -38,6 +38,7 @@ class LabelCustomTextField extends StatefulWidget {
     this.isOptional = true,
     this.textCapitalization,
     this.onSaved,
+    this.focusNode,
   });
 
   final TextEditingController? controller;
@@ -59,6 +60,7 @@ class LabelCustomTextField extends StatefulWidget {
   final bool? readOnly;
   final Widget? label;
   final void Function(String?)? onSaved;
+  final FocusNode? focusNode;
 
   final TextStyle? textFieldLabelstyle;
   final List<TextInputFormatter>? inputFormatters;
@@ -149,6 +151,7 @@ class _LabelCustomTextField extends State<LabelCustomTextField> {
             ),
             width: w,
             child: TextFormField(
+              focusNode: widget.focusNode,
               textCapitalization:
                   widget.textCapitalization ?? TextCapitalization.none,
               readOnly: widget.readOnly ?? false,

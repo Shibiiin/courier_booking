@@ -1,9 +1,20 @@
+import 'dart:convert';
+
 import 'package:courier_booking/Courier%20Booking/entities/courier_booking_modal.dart';
+import 'package:courier_booking/Courier%20Booking/presentation/theme/local_storage.dart';
+import 'package:courier_booking/Courier%20Booking/presentation/widgets/common/custom_print.dart';
+import 'package:courier_booking/Courier%20Booking/presentation/widgets/common/custom_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
 class DashBoardController with ChangeNotifier {
+  DashBoardController() {
+    loadBookings();
+  }
+
   /// Sender Form fields
   final senderNameController = TextEditingController();
   final senderPhoneController = TextEditingController();
@@ -17,6 +28,9 @@ class DashBoardController with ChangeNotifier {
   ///Pick up date
   final TextEditingController pickupDateController = TextEditingController();
   final TextEditingController pickupTimeController = TextEditingController();
+
+  /// Track Shipment
+  final trackingController = TextEditingController();
 
   ///Form Key
   final formKey = GlobalKey<FormState>();
@@ -64,7 +78,6 @@ class DashBoardController with ChangeNotifier {
   }
 
   /// Calculates the estimated price based on weight.
-
   double get estimatedPrice {
     final weight = double.tryParse(packageWeightController.text) ?? 0;
     return weight * 10;
@@ -142,12 +155,86 @@ class DashBoardController with ChangeNotifier {
     }
   }
 
-  final List<CourierBookingModal> _bookings = [];
+  final List<CourierBookingModal> bookingsList = [];
+  final Box<CourierBookingModal> bookingBox = Hive.box(LocalStorage.bookings);
 
-  List<CourierBookingModal> get bookings => _bookings;
+  List<CourierBookingModal> get bookings => bookingsList;
 
   void addBooking(CourierBookingModal booking) {
-    _bookings.insert(0, booking);
+    bookingsList.insert(0, booking);
+    bookingBox.put(booking.id, booking);
+    successPrint("Booking added to hive storage");
+    bookingsList.sort((a, b) => b.pickupDateTime.compareTo(a.pickupDateTime));
+    notifyListeners();
+  }
+
+  void loadBookings() async {
+    bookingsList.clear();
+    bookingsList.addAll(bookingBox.values);
+    successPrint("Booking List Length ${bookingsList.length}");
+
+    /// sorting to show the recent first
+    bookingsList.sort((a, b) => b.pickupDateTime.compareTo(a.pickupDateTime));
+    notifyListeners();
+  }
+
+  CourierBookingModal? getBookingByTrackingNumber(String trackingNumber) {
+    try {
+      successPrint("Get Booking By Tracking Number");
+      return bookingsList.firstWhere(
+        (booking) => booking.trackingNumber == trackingNumber,
+      );
+    } catch (e) {
+      return null;
+    }
+  }
+
+  void updateBookingStatus(String trackingNumber, String newStatus) {
+    final index = bookingsList.indexWhere(
+      (booking) => booking.trackingNumber == trackingNumber,
+    );
+
+    if (index != -1) {
+      bookingsList[index].status = newStatus;
+      bookingsList[index].save();
+      notifyListeners();
+    }
+  }
+
+  /// ----------- Track shipment ------------
+  String? mockedStatus;
+  CourierBookingModal? trackedBooking;
+  Future<void> trackShipment(BuildContext context) async {
+    alertPrint("Tracking Shipment");
+    final trackingNumber = trackingController.text.trim();
+    if (trackingNumber.isEmpty) {
+      showCustomToast('Please enter a tracking number');
+      return;
+    }
+
+    trackedBooking = null;
+    mockedStatus = null;
+
+    final localBooking = getBookingByTrackingNumber(trackingNumber);
+
+    try {
+      final String response = await rootBundle.loadString(
+        'assets/mock_tracking_data.json',
+      );
+      final data = json.decode(response);
+      if (data[trackingNumber] != null) {
+        mockedStatus = data[trackingNumber]['status'];
+      }
+    } catch (e) {
+      errorPrint("Error Loading Mock Data $e");
+    }
+
+    if (localBooking == null) {
+      showCustomToast('No shipment found with this tracking number');
+    } else {
+      trackedBooking = localBooking;
+    }
+
     notifyListeners();
   }
 
@@ -164,27 +251,14 @@ class DashBoardController with ChangeNotifier {
     pickupTime = null;
     pickupDateController.clear();
     pickupTimeController.clear();
+
     notifyListeners();
   }
 
-  CourierBookingModal? getBookingByTrackingNumber(String trackingNumber) {
-    try {
-      return _bookings.firstWhere(
-        (booking) => booking.trackingNumber == trackingNumber,
-      );
-    } catch (e) {
-      return null;
-    }
-  }
-
-  void updateBookingStatus(String trackingNumber, String newStatus) {
-    final index = _bookings.indexWhere(
-      (booking) => booking.trackingNumber == trackingNumber,
-    );
-
-    if (index != -1) {
-      _bookings[index] = _bookings[index].copyWith(status: newStatus);
-      notifyListeners();
-    }
+  void clearTrackingDetails() {
+    trackingController.clear();
+    trackedBooking = null;
+    mockedStatus = null;
+    notifyListeners();
   }
 }

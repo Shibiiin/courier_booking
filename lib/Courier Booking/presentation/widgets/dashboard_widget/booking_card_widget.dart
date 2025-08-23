@@ -1,4 +1,6 @@
+import 'package:courier_booking/Courier%20Booking/presentation/widgets/common/custom_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../entities/courier_booking_modal.dart';
 
@@ -16,9 +18,29 @@ class BookingCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Tracking #: ${booking.trackingNumber}',
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Tracking #: ${booking.trackingNumber}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: const Icon(Icons.copy, size: 18),
+                  onPressed: () {
+                    Clipboard.setData(
+                      ClipboardData(text: booking.trackingNumber),
+                    ).then((_) {
+                      showCustomToast('Tracking ID copied to clipboard!');
+                    });
+                  },
+                ),
+              ],
             ),
             const SizedBox(height: 8),
             Text('From: ${booking.senderName}'),
