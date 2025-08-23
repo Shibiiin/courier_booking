@@ -1,16 +1,18 @@
-# courier_booking
+1. Flutter Version :- 3.32.8
 
-A new Flutter project.
+2. Packages Used :-   
+go_router: 
+provider: 
+flutter_screenutil:
+intl: 
+ionicons:
+google_fonts: 
+fluttertoast: 
+hive: 
+hive_generator: 
+build_runner: 
+path_provider:
+hive_flutter: 
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+3. Instruction to Run :- The file dart is the main entry point of the application.
+4. ScreenShot of the screens : Placed on the folder img

@@ -17,14 +17,12 @@ void main() async {
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: AppColors.green,
-
       statusBarIconBrightness: Brightness.light,
     ),
   );
   await Hive.initFlutter();
   Hive.registerAdapter(CourierBookingModalAdapter());
 
-  // CORRECT
   await Hive.openBox<CourierBookingModal>(LocalStorage.bookings);
   runApp(
     MultiProvider(
