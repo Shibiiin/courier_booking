@@ -15,6 +15,6 @@ path_provider:
 hive_flutter: 
 
 3. Instruction to Run :- The file dart is the main entry point of the application.
-{  }
+{ TRK1755974577303 , TRK1672618800000, TRK1672705200000 } these are the dummy tracking numbers from the mocked tracking data file.
 
-ScreenShot of the screens : Placed on the folder (img/)
+4. ScreenShot of the screens : Placed on the folder (img/)
