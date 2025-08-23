@@ -15,4 +15,6 @@ path_provider:
 hive_flutter: 
 
 3. Instruction to Run :- The file dart is the main entry point of the application.
-4. ScreenShot of the screens : Placed on the folder img
+{  }
+
+ScreenShot of the screens : Placed on the folder (img/)
