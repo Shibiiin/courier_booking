@@ -1,4 +1,3 @@
-import 'package:courier_booking/Courier%20Booking/entities/courier_booking_modal.dart';
 import 'package:courier_booking/Courier%20Booking/presentation/manager/dashboard_controller.dart';
 import 'package:courier_booking/Courier%20Booking/presentation/widgets/common/extension.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +34,8 @@ class _TrackingScreenState extends State<TrackingScreen> {
         return const Icon(Icons.delivery_dining, color: Colors.green, size: 40);
       case 'delivered':
         return const Icon(Icons.check_circle, color: Colors.green, size: 40);
+      case 'booked': // Match the icon from the design
+        return const Icon(Icons.more_horiz, color: Colors.grey, size: 40);
       default:
         return const Icon(Icons.pending, color: Colors.grey, size: 40);
     }
@@ -56,30 +57,42 @@ class _TrackingScreenState extends State<TrackingScreen> {
   }
 
   Widget _buildNoDataState() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(Icons.search_off, size: 80.w, color: Colors.grey[300]),
-        20.height,
-        Text(
-          'No Shipment Found',
-          style: TextStyle(
-            fontSize: 22.sp,
-            fontWeight: FontWeight.bold,
-            color: Colors.grey[600],
-          ),
+    return Padding(
+      padding: EdgeInsets.only(top: 50.h),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.search_off, size: 80.w, color: Colors.grey[300]),
+            20.height,
+            Text(
+              'No Shipment Found',
+              style: TextStyle(
+                fontSize: 22.sp,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[600],
+              ),
+            ),
+            10.height,
+            Text(
+              'Please check the tracking number\nand try again',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16.sp, color: Colors.grey[500]),
+            ),
+          ],
         ),
-        10.height,
-        Text(
-          'Please check the tracking number\nand try again',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 16.sp, color: Colors.grey[500]),
-        ),
-      ],
+      ),
     );
   }
 
-  Widget _buildTrackingCard(CourierBookingModal booking, String status) {
+  Widget _buildTrackingCard({
+    required String status,
+    required String trackingNumber,
+    required String receiverName,
+    required String receiverLocation,
+    required String senderName,
+    required double weight,
+  }) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10.h),
       decoration: BoxDecoration(
@@ -87,10 +100,9 @@ class _TrackingScreenState extends State<TrackingScreen> {
         borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
-            blurRadius: 10.r,
-            spreadRadius: 2.r,
-            offset: const Offset(0, 4),
+            color: Colors.grey.withOpacity(0.2),
+            blurRadius: 8.r,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -109,16 +121,16 @@ class _TrackingScreenState extends State<TrackingScreen> {
                 letterSpacing: 1.2,
               ),
             ),
-            16.height,
-            const Divider(color: Colors.grey, height: 1),
-            16.height,
-            _buildInfoRow('Tracking Number', booking.trackingNumber, true),
+            20.height,
+            _buildInfoRow('Tracking Number', trackingNumber, true),
+            const Divider(height: 24),
+            _buildInfoRow('Receiver', receiverName),
             12.height,
-            _buildInfoRow('Sender', booking.senderName),
+            _buildInfoRow('Receiver Location', receiverLocation),
+            const Divider(height: 24),
+            _buildInfoRow('Sender', senderName),
             12.height,
-            _buildInfoRow('Receiver', booking.receiverName),
-            12.height,
-            _buildInfoRow('Weight', '${booking.packageWeight} kg'),
+            _buildInfoRow('Weight', '$weight kg'),
           ],
         ),
       ),
@@ -130,7 +142,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          '$label:',
+          label,
           style: TextStyle(
             fontSize: 14.sp,
             color: Colors.grey[600],
@@ -141,7 +153,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
           value,
           style: TextStyle(
             fontSize: 14.sp,
-            color: Colors.grey[800],
+            color: Colors.black,
             fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
           ),
         ),
@@ -165,124 +177,127 @@ class _TrackingScreenState extends State<TrackingScreen> {
         backgroundColor: Colors.green,
         foregroundColor: Colors.white,
       ),
-      body: Padding(
-        padding: EdgeInsets.all(20.w),
-        child: ListView(
-          // crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              padding: EdgeInsets.all(16.w),
-              decoration: BoxDecoration(
-                color: Colors.grey[50],
-                borderRadius: BorderRadius.circular(12.r),
-                border: Border.all(color: Colors.grey[200]!),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    'Track Your Shipment',
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[800],
-                    ),
-                  ),
-                  10.height,
-                  Text(
-                    'Enter your tracking number to check the status',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 14.sp, color: Colors.grey[600]),
-                  ),
-                  20.height,
-                  TextField(
-                    controller: controller.trackingController,
-                    decoration: InputDecoration(
-                      labelText: 'Tracking Number',
-                      hintText: 'Enter your tracking number',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.clear, color: Colors.green),
-                        onPressed: () => controller.trackingController.clear(),
-                      ),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                        vertical: 14.h,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.all(16.w),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(color: Colors.grey[200]!),
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      'Track Your Shipment',
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
                     ),
-                    onSubmitted: (_) => controller.trackShipment(context),
-                  ),
-                  15.height,
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () => controller.trackShipment(context),
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 16.h),
-                        backgroundColor: Colors.green,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                        elevation: 2,
+                    10.height,
+                    Text(
+                      'Enter your tracking number to check the status',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: Colors.grey[600],
                       ),
-                      child: Text(
-                        'Track Shipment',
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.bold,
+                    ),
+                    20.height,
+                    TextField(
+                      controller: controller.trackingController,
+                      decoration: InputDecoration(
+                        labelText: 'Enter Tracking Number',
+                        border: const OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: () {
+                            controller.trackingController.clear();
+                            controller.clearTrackingDetails();
+                          },
                         ),
                       ),
+                      // onSubmitted: (_) => controller.trackShipment(context),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            30.height,
-            Expanded(
-              child: Consumer<DashBoardController>(
-                builder: (context, provider, child) {
-                  if (provider.trackingController.text.isEmpty) {
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.search, size: 80.w, color: Colors.grey[300]),
-                        20.height,
-                        Text(
-                          'Enter Tracking Number',
-                          style: TextStyle(
-                            fontSize: 22.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey[600],
+                    15.height,
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () => controller.trackShipment(context),
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(vertical: 16.h),
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.r),
                           ),
                         ),
-                        10.height,
-                        Text(
-                          'Please enter a tracking number\nto search for your shipment',
-                          textAlign: TextAlign.center,
+                        child: Text(
+                          'Track Shipment',
                           style: TextStyle(
                             fontSize: 16.sp,
-                            color: Colors.grey[500],
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ],
-                    );
-                  } else if (provider.trackedBooking != null) {
-                    final booking = provider.trackedBooking!;
-                    final status = provider.mockedStatus ?? booking.status;
-                    return SingleChildScrollView(
-                      child: _buildTrackingCard(booking, status),
-                    );
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              30.height,
+              Consumer<DashBoardController>(
+                builder: (context, provider, child) {
+                  final booking = provider.trackedBooking;
+                  final mock = provider.mockData;
+
+                  if (booking == null && mock == null) {
+                    if (provider.trackingController.text.isNotEmpty) {
+                      return _buildNoDataState();
+                    } else {
+                      return Padding(
+                        padding: EdgeInsets.only(top: 50.h),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.search,
+                              size: 80.w,
+                              color: Colors.grey[300],
+                            ),
+                            20.height,
+                            Text(
+                              'Enter a tracking number to begin.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                color: Colors.grey[500],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
                   } else {
-                    return _buildNoDataState();
+                    return _buildTrackingCard(
+                      status: mock?.status ?? booking!.status,
+                      trackingNumber:
+                          mock?.trackingNumber ?? booking!.trackingNumber,
+                      receiverName: mock?.receiverName ?? booking!.receiverName,
+                      receiverLocation:
+                          mock?.receiverLocation ?? booking!.receiverAddress,
+                      senderName: mock?.senderName ?? booking!.senderName,
+                      weight: mock?.weight ?? booking!.packageWeight,
+                    );
                   }
                 },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

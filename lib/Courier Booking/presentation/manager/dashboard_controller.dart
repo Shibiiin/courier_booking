@@ -10,6 +10,8 @@ import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
+import '../../entities/mock_tracking_data.dart';
+
 class DashBoardController with ChangeNotifier {
   DashBoardController() {
     loadBookings();
@@ -204,8 +206,9 @@ class DashBoardController with ChangeNotifier {
   /// ----------- Track shipment ------------
   String? mockedStatus;
   CourierBookingModal? trackedBooking;
+  MockTrackingData? mockData;
+
   Future<void> trackShipment(BuildContext context) async {
-    alertPrint("Tracking Shipment");
     final trackingNumber = trackingController.text.trim();
     if (trackingNumber.isEmpty) {
       showCustomToast('Please enter a tracking number');
@@ -213,29 +216,43 @@ class DashBoardController with ChangeNotifier {
     }
 
     trackedBooking = null;
-    mockedStatus = null;
+    mockData = null;
+    alertPrint("--- Starting Search for: $trackingNumber ---");
 
     final localBooking = getBookingByTrackingNumber(trackingNumber);
+    if (localBooking != null) {
+      alertPrint("SUCCESS: Found booking locally in Hive.");
+      trackedBooking = localBooking;
+    } else {
+      alertPrint("INFO: Did not find booking locally in Hive.");
+    }
 
     try {
       final String response = await rootBundle.loadString(
         'assets/mock_tracking_data.json',
       );
       final data = json.decode(response);
-      if (data[trackingNumber] != null) {
-        mockedStatus = data[trackingNumber]['status'];
+
+      if (data.containsKey(trackingNumber)) {
+        mockData = MockTrackingData.fromJson(data[trackingNumber]);
+        successPrint(
+          "SUCCESS: Found full mocked data in JSON file. Status: '${mockData?.status}'",
+        );
+      } else {
+        alertPrint(
+          "INFO: Did not find mocked status for this ID in JSON file.",
+        );
       }
     } catch (e) {
-      errorPrint("Error Loading Mock Data $e");
+      errorPrint("ERROR: Failed to load or parse mock_tracking_data.json: $e");
     }
 
-    if (localBooking == null) {
+    if (trackedBooking == null && mockData == null) {
       showCustomToast('No shipment found with this tracking number');
-    } else {
-      trackedBooking = localBooking;
     }
 
     notifyListeners();
+    successPrint("--- Search Complete. Notifying UI. ---");
   }
 
   /// Clears all the controllers and date/time fields after a booking.
@@ -259,6 +276,7 @@ class DashBoardController with ChangeNotifier {
     trackingController.clear();
     trackedBooking = null;
     mockedStatus = null;
+    mockData = null;
     notifyListeners();
   }
 }

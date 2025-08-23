@@ -12,16 +12,41 @@ import '../widgets/dashboard_widget/booking_card_widget.dart';
 class DashBoardPage extends StatelessWidget {
   const DashBoardPage({super.key});
 
+  Widget _buildNoBookingsState() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.inventory_2_outlined, size: 80.w, color: Colors.grey[300]),
+        20.height,
+        Text(
+          'No Bookings Yet',
+          style: TextStyle(
+            fontSize: 22.sp,
+            fontWeight: FontWeight.bold,
+            color: Colors.grey[600],
+          ),
+        ),
+        10.height,
+        Text(
+          'Start by booking your first courier\nservice to see them here',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 16.sp, color: Colors.grey[500]),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('Courier App'),
-        backgroundColor: Colors.blue,
+        backgroundColor: AppColors.green,
         foregroundColor: Colors.white,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -30,16 +55,7 @@ class DashBoardPage extends StatelessWidget {
               height: 100.h,
               width: double.infinity,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: AppColors.ogbackgroundcolor,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
+                borderRadius: BorderRadius.circular(10.r),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -50,24 +66,30 @@ class DashBoardPage extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () => context.push(AppRoutes.booking),
                       style: ElevatedButton.styleFrom(
-                        // padding: const EdgeInsets.symmetric(vertical: 16),
                         backgroundColor: Colors.blue,
                         foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
                       ),
-                      child: const Text('Book Courier'),
+                      child: Text(
+                        'Book Courier',
+                        style: TextStyle(fontSize: 16.sp),
+                      ),
                     ),
                   ),
-                  15.height,
+                  10.height,
                   SizedBox(
                     width: 300.w,
                     child: ElevatedButton(
                       onPressed: () => context.push(AppRoutes.tracking),
                       style: ElevatedButton.styleFrom(
-                        // padding: const EdgeInsets.symmetric(vertical: 16),
                         backgroundColor: Colors.green,
                         foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
                       ),
-                      child: const Text('Track Shipment'),
+                      child: Text(
+                        'Track Shipment',
+                        style: TextStyle(fontSize: 16.sp),
+                      ),
                     ),
                   ),
                 ],
@@ -75,9 +97,9 @@ class DashBoardPage extends StatelessWidget {
             ),
 
             20.height,
-            const Text(
+            Text(
               'Recent Bookings',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
 
@@ -86,7 +108,7 @@ class DashBoardPage extends StatelessWidget {
               child: Consumer<DashBoardController>(
                 builder: (context, provider, child) {
                   if (provider.bookings.isEmpty) {
-                    return const Center(child: Text('No bookings yet'));
+                    return _buildNoBookingsState();
                   }
                   return ListView.builder(
                     itemCount: provider.bookings.length,

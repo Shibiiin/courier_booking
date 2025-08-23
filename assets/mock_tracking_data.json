@@ -1,52 +1,26 @@
 {
-  "TRK1672532400000": {
+  "c": {
     "status": "Delivered",
-    "updates": [
-      {
-        "timestamp": "28-08-2025 11:30",
-        "location": "New Delhi, DL",
-        "description": "Successfully delivered to the recipient."
-      },
-      {
-        "timestamp": "28-08-2025 08:15",
-        "location": "New Delhi, DL",
-        "description": "Out for delivery."
-      },
-      {
-        "timestamp": "27-08-2025 20:50",
-        "location": "Jaipur, RJ",
-        "description": "Package arrived at the destination hub."
-      },
-      {
-        "timestamp": "26-08-2025 14:20",
-        "location": "Mumbai, MH",
-        "description": "Package has been picked up by the courier."
-      }
-    ]
+    "trackingNumber": "TRK1672532400000",
+    "receiverName": "Amit Kumar",
+    "receiverLocation": "New Delhi, DL",
+    "senderName": "Riya Sharma",
+    "weight": 1.5
   },
   "TRK1672618800000": {
     "status": "In Transit",
-    "updates": [
-      {
-        "timestamp": "28-08-2025 10:45",
-        "location": "Nagpur, MH",
-        "description": "Arrived at sorting facility."
-      },
-      {
-        "timestamp": "27-08-2025 16:00",
-        "location": "Kolkata, WB",
-        "description": "Shipment has been picked up."
-      }
-    ]
+    "trackingNumber": "TRK1672618800000",
+    "receiverName": "Priya Singh",
+    "receiverLocation": "Nagpur, MH",
+    "senderName": "Ankit Patel",
+    "weight": 3.0
   },
   "TRK1672705200000": {
     "status": "Picked Up",
-    "updates": [
-      {
-        "timestamp": "28-08-2025 17:30",
-        "location": "Chennai, TN",
-        "description": "Courier has collected the package."
-      }
-    ]
+    "trackingNumber": "TRK1672705200000",
+    "receiverName": "Sneha Reddy",
+    "receiverLocation": "Hyderabad, TS",
+    "senderName": "Vikram Rao",
+    "weight": 0.8
   }
 }

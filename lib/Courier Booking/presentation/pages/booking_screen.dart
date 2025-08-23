@@ -56,7 +56,7 @@ class _BookingScreenState extends State<BookingScreen> {
     final controller = Provider.of<DashBoardController>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.backgroundColor,
+        backgroundColor: AppColors.green,
         leading: IconButton(
           onPressed: () {
             controller.clearBookingDetails();
@@ -84,7 +84,7 @@ class _BookingScreenState extends State<BookingScreen> {
                 textFieldLabel: 'Sender Name',
                 focusNode: _senderNameFocusNode,
                 textInputAction: TextInputAction.next,
-                onFieldSubmit: (_) {
+                onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_senderPhoneFocusNode);
                 },
               ),
@@ -96,7 +96,7 @@ class _BookingScreenState extends State<BookingScreen> {
                 inputFormatters: [LengthLimitingTextInputFormatter(10)],
                 focusNode: _senderPhoneFocusNode,
                 textInputAction: TextInputAction.next,
-                onFieldSubmit: (_) {
+                onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_senderAddressFocusNode);
                 },
               ),
@@ -107,7 +107,7 @@ class _BookingScreenState extends State<BookingScreen> {
                 lines: 2,
                 focusNode: _senderAddressFocusNode,
                 textInputAction: TextInputAction.next,
-                onFieldSubmit: (_) {
+                onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_receiverNameFocusNode);
                 },
               ),
@@ -123,7 +123,7 @@ class _BookingScreenState extends State<BookingScreen> {
                 textFieldLabel: 'Receiver Name',
                 focusNode: _receiverNameFocusNode,
                 textInputAction: TextInputAction.next,
-                onFieldSubmit: (_) {
+                onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_receiverPhoneFocusNode);
                 },
               ),
@@ -135,7 +135,7 @@ class _BookingScreenState extends State<BookingScreen> {
                 inputType: TextInputType.phone,
                 focusNode: _receiverPhoneFocusNode,
                 textInputAction: TextInputAction.next,
-                onFieldSubmit: (_) {
+                onFieldSubmitted: (_) {
                   FocusScope.of(
                     context,
                   ).requestFocus(_receiverAddressFocusNode);
@@ -148,7 +148,7 @@ class _BookingScreenState extends State<BookingScreen> {
                 lines: 2,
                 focusNode: _receiverAddressFocusNode,
                 textInputAction: TextInputAction.next,
-                onFieldSubmit: (_) {
+                onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_packageWeightFocusNode);
                 },
               ),
@@ -166,7 +166,7 @@ class _BookingScreenState extends State<BookingScreen> {
                   inputType: TextInputType.number,
                   focusNode: _packageWeightFocusNode,
                   textInputAction: TextInputAction.done,
-                  onFieldSubmit: (_) {
+                  onFieldSubmitted: (_) {
                     FocusScope.of(context).unfocus();
                   },
                   onchanged: () {},

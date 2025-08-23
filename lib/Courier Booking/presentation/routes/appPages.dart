@@ -1,4 +1,5 @@
 import 'package:courier_booking/Courier%20Booking/presentation/pages/dashboard.dart';
+import 'package:courier_booking/Courier%20Booking/presentation/widgets/common/custom_page_animation.dart';
 import 'package:go_router/go_router.dart';
 
 import '../pages/booking_screen.dart';
@@ -12,23 +13,23 @@ class GoRouterPage {
     routes: [
       GoRoute(
         path: AppRoutes.splash,
-        builder: (context, state) {
-          return SplashScreen();
-        },
+        pageBuilder: (context, state) =>
+            buildCustomTransitionPage(state: state, child: SplashScreen()),
       ),
       GoRoute(
         path: AppRoutes.dashboard,
-        builder: (context, state) {
-          return DashBoardPage();
-        },
+        pageBuilder: (context, state) =>
+            buildCustomTransitionPage(state: state, child: DashBoardPage()),
       ),
       GoRoute(
         path: AppRoutes.booking,
-        builder: (context, state) => const BookingScreen(),
+        pageBuilder: (context, state) =>
+            buildCustomTransitionPage(state: state, child: BookingScreen()),
       ),
       GoRoute(
         path: AppRoutes.tracking,
-        builder: (context, state) => const TrackingScreen(),
+        pageBuilder: (context, state) =>
+            buildCustomTransitionPage(state: state, child: TrackingScreen()),
       ),
     ],
   );
